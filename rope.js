@@ -13,7 +13,6 @@ class Rope
       
   World.add(engine.world, this.body);
   
-      
     Composite.add(rects, Constraint.create({
     pointA: this.pointA,
     bodyB: rects.bodies[0],
