@@ -18,6 +18,8 @@ var food;
 var rabbit, rabbitIMG;
 var b1;
 var piscando,comendo,triste;
+var somFundo, somTriste, somCorda, somComendo, somAr;
+var soprador;
 
 function preload()
 {
@@ -27,6 +29,11 @@ function preload()
   piscando = loadAnimation("blink_1.png", "blink_2.png", "blink_3.png");
   comendo = loadAnimation("eat_0.png", "eat_1.png", "eat_2.png", "eat_3.png", "eat_4.png");
   triste = loadAnimation("sad_1.png", "sad_2.png", "sad_3.png");
+  somFundo = loadSound("sound1.mp3");
+  somTriste = loadSound("sad.wav");
+  somCorda = loadSound("rope_cut.mp3");
+  somComendo = loadSound("eating_sound.mp3");
+  somAr = loadSound("air.wav");
 
   piscando.playing = true;
   piscando.looping = true;
@@ -62,6 +69,12 @@ function setup()
   b1.position(220,30);
   b1.size(50,50);
   b1.mouseClicked(cair);
+
+  //criação do botão para soprar a fruta
+  soprador = createImg('balloon.png');
+  soprador.position(220,300);
+  soprador.size(50,50);
+  soprador.mouseClicked(soprar);
 
 
   //criação do sprite do coelho
@@ -99,7 +112,13 @@ function draw()
 
 function cair()
 {
+  somCorda.play();
   rope.break();
   link.cortar();
   link = null;
+}
+
+function soprar()
+{
+  Matter.Body.applyForce(fruit, {x:0,y:0}, {x:0.01,y:0});
 }
