@@ -20,6 +20,7 @@ var b1;
 var piscando,comendo,triste;
 var somFundo, somTriste, somCorda, somComendo, somAr;
 var soprador;
+var bmudo;
 
 function preload()
 {
@@ -46,6 +47,10 @@ function setup()
 {
   createCanvas(500,700);
   frameRate(80); //alterado, geralmente ele é 30 frames/seg
+
+  //som de fundo
+  somFundo.play();
+  somFundo.setVolume(0.3);
   
   //inserindo atraso na animação 
   piscando.frameDelay = 30;
@@ -72,10 +77,14 @@ function setup()
 
   //criação do botão para soprar a fruta
   soprador = createImg('balloon.png');
-  soprador.position(220,300);
-  soprador.size(50,50);
+  soprador.position(90,260);
+  soprador.size(90,90);
   soprador.mouseClicked(soprar);
 
+  bmudo = createImg('mute.png');
+  bmudo.position(440,40);
+  bmudo.size(40,40);
+  bmudo.mouseClicked(mutar);
 
   //criação do sprite do coelho
   rabbit = createSprite(300,600,20,20);
@@ -121,4 +130,17 @@ function cair()
 function soprar()
 {
   Matter.Body.applyForce(fruit, {x:0,y:0}, {x:0.01,y:0});
+  somAr.play();
+}
+
+function mutar()
+{
+  if(somFundo.isPlaying())
+  {
+    somFundo.stop();
+  }
+   else
+   {
+     somFundo.play();
+   }
 }
