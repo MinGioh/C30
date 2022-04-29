@@ -40,17 +40,33 @@ function preload()
   piscando.looping = true;
   comendo.playing = true;
   comendo.looping = false;
+  triste.playing = true;
+  triste.looping = false;
 
 }
 
 function setup() 
 {
-  createCanvas(500,700);
+  //createCanvas(500,700);
+
+  //comando para ajustar tela para celular
+  var isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+  if(isMobile){
+    canW = displayWidth; 
+    canH = displayHeight; 
+    createCanvas(displayWidth+80, displayHeight);
+  } 
+  else {
+    canW = windowWidth; 
+    canH = windowHeight; 
+    createCanvas(windowWidth, windowHeight);
+  }
   frameRate(80); //alterado, geralmente ele é 30 frames/seg
 
   //som de fundo
+  somFundo.setVolume(0.2);
   somFundo.play();
-  somFundo.setVolume(0.3);
+  
   
   //inserindo atraso na animação 
   piscando.frameDelay = 30;
@@ -60,7 +76,7 @@ function setup()
   world = engine.world;
 
   //criação do objeto ground a partir da classe 
-  ground = new Ground(200,680,600,20);
+  ground = new Ground(200,canH,600,20);
 
   //criação do objeto corda a partir da classe 
   rope = new Rope(7,{x:245,y:30});
@@ -87,9 +103,10 @@ function setup()
   bmudo.mouseClicked(mutar);
 
   //criação do sprite do coelho
-  rabbit = createSprite(300,600,20,20);
+  rabbit = createSprite(300,canH-120,20,20);
   rabbit.addAnimation('piscando', piscando);
   rabbit.addAnimation('comendo', comendo);
+  rabbit.addAnimation('triste', triste);
   rabbit.changeAnimation('piscando');
   rabbit.scale = 0.3;
 
@@ -108,12 +125,33 @@ function draw()
 {
   background(51);
 
-  image(bg_img,width/2,height/2,490,690);
+  image(bg_img,width/2,height/2,canW,canH);
 
-  image(food,fruit.position.x,fruit.position.y,70,70);
+  if(fruit!=null){
+    image(food,fruit.position.x,fruit.position.y,70,70);
+  }
   rope.show();
   Engine.update(engine);
-  ground.show();
+  //ground.show();
+
+  if(collide(fruit,rabbit)==true)
+  {
+    //rope.break();
+    //World.remove(engine.world,fruit);
+    fruit = null;
+    rabbit.changeAnimation('comendo');
+    somComendo.setVolume(0.2);
+    somComendo.play();
+  }
+
+  if(fruit!= null && fruit.position.y >= 650){
+    rabbit.changeAnimation('triste');
+    somFundo.stop();
+    somTriste.setVolume(0.2);
+    somTriste.play();
+    fruit = null;
+  }
+  
 
   drawSprites();
    
@@ -141,6 +179,22 @@ function mutar()
   }
    else
    {
+    somFundo.setVolume(0.2);
      somFundo.play();
    }
+}
+
+function collide(body,sprite)
+{
+  if(body!=null)
+        {
+         var d = dist(body.position.x,body.position.y,sprite.position.x,sprite.position.y);
+          if(d<=80)
+            {
+               return true; 
+            }
+            else{
+              return false;
+            }
+         }
 }
